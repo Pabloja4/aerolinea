@@ -4,6 +4,8 @@
  */
 package View;
 import Class.*;
+import Model.AeropuertoModel;
+import Model.AvionModel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
@@ -18,13 +20,18 @@ public class Index extends javax.swing.JFrame {
     /**
      * Creates new form Index
      */
-    ArrayList<Aeropuerto> listaAeropuerto = new ArrayList();
-    ArrayList<Avion> listaAvion = new ArrayList();
+    AeropuertoModel aeropuerto_model = new AeropuertoModel();
+    ArrayList<Aeropuerto> listaAeropuertos= aeropuerto_model.Read();
+    AvionModel avion_model = new AvionModel();
+    ArrayList<Avion> listaAvion = avion_model.Read();
     ArrayList<Ruta> listaRuta = new ArrayList();
+    
     
     public Index() {
         initComponents();
-        
+        cargarListaTablaAeropuerto();
+        cargarListaTablaAvion();
+        cargarComboOrigen();
     }
 
     
@@ -46,21 +53,37 @@ public class Index extends javax.swing.JFrame {
         tableAvion.setModel(tab);
     }
     
+     public void limpiarCamposAvion(){
+        txtIdAvion.setValue(0);
+        txtModeloAvion.setText("");
+        txtnumAsientosAvion.setValue(0);
+        txtnumBaniosAvion.setValue(0);
+    }
+    
     public void cargarListaTablaAeropuerto() {
         DefaultTableModel tab = new DefaultTableModel();
-        String[] cabecera = {"Id", "Nombre", "Pais", "Ciudad", "CoordX", "CoordY"};
+        String[] cabecera = {"Id", "Nombre",  "Ciudad", "Pais", "CoordX", "CoordY"};
         Object[] datos = new Object[cabecera.length];
         tab.setColumnIdentifiers(cabecera);
-        for (int i = 0; i < listaAeropuerto.size(); i++) {
-            datos[0] = listaAeropuerto.get(i).getId();
-            datos[1] = listaAeropuerto.get(i).getNombre();
-            datos[2] = listaAeropuerto.get(i).getPais();
-            datos[3] = listaAeropuerto.get(i).getCiudad();
-            datos[4] = listaAeropuerto.get(i).getCoord_x();
-            datos[5] = listaAeropuerto.get(i).getCoord_y();
+        for (int i = 0; i < listaAeropuertos.size(); i++) {
+            datos[0] = listaAeropuertos.get(i).getId();
+            datos[1] = listaAeropuertos.get(i).getNombre();
+            datos[2] = listaAeropuertos.get(i).getCiudad();
+            datos[3] = listaAeropuertos.get(i).getPais();
+            datos[4] = listaAeropuertos.get(i).getCoord_x();
+            datos[5] = listaAeropuertos.get(i).getCoord_y();
             tab.addRow(datos);
         }
         tableAeropuertos.setModel(tab);
+    }
+    
+    public void limpiarCamposAeropuerto(){
+        txtIdAeropuerto.setValue(0);
+        txtNombreAeropuerto.setText("");
+        txtCiudadAeropuerto.setText("");
+        txtPaisAeropuerto.setText("");
+        txtCoordenadaXAeropuerto.setValue(0);
+        txtCoordenadaYAeropuerto.setValue(0);
     }
 
     
@@ -79,9 +102,22 @@ public class Index extends javax.swing.JFrame {
             tab.addRow(datos);
         }
         tableRuta.setModel(tab);
+        
+        
     }
     
-    
+      public void cargarComboOrigen() {
+        comboRutaOrigen.removeAllItems();
+        comboRutaOrigen.addItem("");
+        comboRutaDestino.removeAllItems();
+        comboRutaDestino.addItem("");
+        for (Aeropuerto aeropuerto : listaAeropuertos) {
+            comboRutaOrigen.addItem(aeropuerto.getId() + "-" + aeropuerto.getNombre());
+            comboRutaDestino.addItem(aeropuerto.getId() + "-" + aeropuerto.getNombre());
+        }
+        comboRutaOrigen.setSelectedIndex(0);
+    }
+
     
     
     /**
@@ -139,13 +175,13 @@ public class Index extends javax.swing.JFrame {
         labDestinoRuta = new javax.swing.JLabel();
         labTiempoEstimadoRuta = new javax.swing.JLabel();
         txtIdRuta = new javax.swing.JSpinner();
-        txtOrigenRuta = new javax.swing.JTextField();
-        txtDestinoRuta = new javax.swing.JTextField();
         btnGuardarRuta = new javax.swing.JButton();
         btnBuscarRuta = new javax.swing.JButton();
         btnEditarRuta = new javax.swing.JButton();
         btnEliminarRuta = new javax.swing.JButton();
         txtTiempoEstimadoRuta = new javax.swing.JSpinner();
+        comboRutaOrigen = new javax.swing.JComboBox<>();
+        comboRutaDestino = new javax.swing.JComboBox<>();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableRuta = new javax.swing.JTable();
@@ -487,6 +523,15 @@ public class Index extends javax.swing.JFrame {
 
         btnEliminarRuta.setText("Eliminar");
 
+        comboRutaOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboRutaOrigen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboRutaOrigenActionPerformed(evt);
+            }
+        });
+
+        comboRutaDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -498,16 +543,17 @@ public class Index extends javax.swing.JFrame {
                     .addComponent(labIdRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labOrigenRuta)
                     .addComponent(labTiempoEstimadoRuta))
-                .addGap(20, 20, 20)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtDestinoRuta)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                            .addGap(1, 1, 1)
-                            .addComponent(txtIdRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(txtOrigenRuta, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(txtTiempoEstimadoRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(txtTiempoEstimadoRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtIdRuta, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                            .addComponent(comboRutaOrigen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboRutaDestino, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnEditarRuta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEliminarRuta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -522,29 +568,32 @@ public class Index extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(labIdRuta)
+                        .addGap(31, 31, 31)
+                        .addComponent(labOrigenRuta)
                         .addGap(28, 28, 28)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labOrigenRuta)
-                            .addComponent(txtOrigenRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(25, 25, 25)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(labDestinoRuta)
-                            .addComponent(txtDestinoRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(comboRutaDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtIdRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnGuardarRuta))
                         .addGap(18, 18, 18)
-                        .addComponent(btnBuscarRuta)
-                        .addGap(19, 19, 19)
-                        .addComponent(btnEditarRuta)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(btnBuscarRuta)
+                                .addGap(19, 19, 19)
+                                .addComponent(btnEditarRuta))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(4, 4, 4)
+                                .addComponent(comboRutaOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnEliminarRuta)
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(labTiempoEstimadoRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtTiempoEstimadoRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Rutas", jPanel5);
@@ -619,11 +668,15 @@ public class Index extends javax.swing.JFrame {
         int coord_x = (int) txtCoordenadaXAeropuerto.getValue();
         int coord_y = (int) txtCoordenadaYAeropuerto.getValue();
        
-        if( id == 0 || nombre.equals("") || ciudad.equals("") || pais.equals("") || coord_x == 0 || coord_y == 0){
+        if(id == 0 || nombre.equals("") || ciudad.equals("") || pais.equals("") || coord_x == 0 || coord_y == 0){
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
-        } else {
+        }else {
             Aeropuerto aero = new Aeropuerto(id, nombre, ciudad, pais, coord_x, coord_y);
-            listaAeropuerto.add(aero);
+            
+            int resultado = aeropuerto_model.Create(aero);
+            aero.setId(resultado);
+            aeropuerto_model.Create(aero);
+            
             JOptionPane.showMessageDialog(this, "Aeropuerto " + nombre + " fue creado correctamente");
             cargarListaTablaAeropuerto();
         }
@@ -642,6 +695,7 @@ public class Index extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         } else {
             Avion avi = new Avion(id, modelo, numeroAsientos, numeroBanio, CapacidadPesoMaximo);
+            avion_model.Create(avi);
             listaAvion.add(avi);
             JOptionPane.showMessageDialog(this, "El avion " + modelo + " fue creado correctamente");
             cargarListaTablaAvion();
@@ -652,13 +706,13 @@ public class Index extends javax.swing.JFrame {
         // TODO add your handling code here:
         int id = (int) txtIdAeropuerto.getValue();
         boolean existe = false;
-        for (int i = 0; i < listaAeropuerto.size(); i++) {
-            if (listaAeropuerto.get(i).getId() == id) {
-                txtNombreAeropuerto.setText(listaAeropuerto.get(i).getNombre());
-                txtCiudadAeropuerto.setText(listaAeropuerto.get(i).getCiudad());
-                txtPaisAeropuerto.setText(listaAeropuerto.get(i).getPais());
-                txtCoordenadaXAeropuerto.setValue(listaAeropuerto.get(i).getCoord_x());
-                txtCoordenadaYAeropuerto.setValue(listaAeropuerto.get(i).getCoord_y());
+        for (int i = 0; i < listaAeropuertos.size(); i++) {
+            if (listaAeropuertos.get(i).getId() == id) {
+                txtNombreAeropuerto.setText(listaAeropuertos.get(i).getNombre());
+                txtCiudadAeropuerto.setText(listaAeropuertos.get(i).getCiudad());
+                txtPaisAeropuerto.setText(listaAeropuertos.get(i).getPais());
+                txtCoordenadaXAeropuerto.setValue(listaAeropuertos.get(i).getCoord_x());
+                txtCoordenadaYAeropuerto.setValue(listaAeropuertos.get(i).getCoord_y());
           
                 existe = true;
                 break;
@@ -684,15 +738,17 @@ public class Index extends javax.swing.JFrame {
         if(id == 0 || nombre.equals("") || ciudad.equals("") || pais.equals("") || coord_x == 0 || coord_y == 0){
             JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
         }else{
-            for (int i = 0; i < listaAeropuerto.size(); i++) {
-            if (listaAeropuerto.get(i).getId() == id) {
-                    listaAeropuerto.get(i).setNombre(nombre);
-                    listaAeropuerto.get(i).setCiudad(ciudad);
-                    listaAeropuerto.get(i).setPais(pais);
-                    listaAeropuerto.get(i).setCoord_x(coord_x);
-                    listaAeropuerto.get(i).setCoord_y(coord_y);
+            for (int i = 0; i < listaAeropuertos.size(); i++) {
+            if (listaAeropuertos.get(i).getId() == id) {
+                    listaAeropuertos.get(i).setNombre(nombre);
+                    listaAeropuertos.get(i).setCiudad(ciudad);
+                    listaAeropuertos.get(i).setPais(pais);
+                    listaAeropuertos.get(i).setCoord_x(coord_x);
+                    listaAeropuertos.get(i).setCoord_y(coord_y);
                     existe = true;
                     cargarListaTablaAeropuerto();
+                    Aeropuerto aer = new Aeropuerto(id, nombre, ciudad, pais, coord_x, coord_y);
+                    aeropuerto_model.Update(aer, id);
                     JOptionPane.showMessageDialog(this, "Aeropuerto editado correctamente");
                     break;
                 }
@@ -709,17 +765,20 @@ public class Index extends javax.swing.JFrame {
         
         int id = (int) txtIdAeropuerto.getValue(); // Spiner
         boolean existe = false;
-        for (int i = 0; i < listaAeropuerto.size(); i++) {
-            if (listaAeropuerto.get(i).getId() == id) {
-                    listaAeropuerto.remove(listaAeropuerto.get(i));
+        for (int i = 0; i < listaAeropuertos.size(); i++) {
+            if (listaAeropuertos.get(i).getId() == id) {
+                    listaAeropuertos.remove(listaAeropuertos.get(i));
                     JOptionPane.showMessageDialog(this, "Aeropuerto eliminado correctamente");
                 existe = true;
+                aeropuerto_model.Delete(id);
                 cargarListaTablaAeropuerto();
+                limpiarCamposAeropuerto();
                 break;
             }
         }
         if (!existe) {
             JOptionPane.showMessageDialog(this, "El Aeropuerto no esta registrado");
+            
         }
 
         
@@ -728,23 +787,23 @@ public class Index extends javax.swing.JFrame {
 
     private void btnGuardarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRutaActionPerformed
         // TODO add your handling code here:
-         int id = (int) txtIdRuta.getValue(); // Spinner
-         Aeropuerto aerOrigen = new Aeropuerto();
-         aerOrigen.setNombre(txtOrigenRuta.getText());
-         Aeropuerto aerDestino = new Aeropuerto();
-         aerDestino.setNombre(txtDestinoRuta.getText());
-        
-        int tiempoEstimado = (int) txtTiempoEstimadoRuta.getValue();
-        
-       
-        if (id == 0 || aerOrigen.getNombre().equals("") || aerDestino.getNombre().equals("") || tiempoEstimado == 0) {
-            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
-        } else {
-            Ruta nuevaRuta = new Ruta(id, aerOrigen, aerDestino, tiempoEstimado);
-            listaRuta.add(nuevaRuta);
-            JOptionPane.showMessageDialog(this, "La ruta " + aerOrigen + " " + aerDestino + " fue creada correctamente");
-            cargarListaTablaRuta();
-        }
+//         int id = (int) txtIdRuta.getValue(); // Spinner
+//         Aeropuerto aerOrigen = new Aeropuerto();
+//         aerOrigen.setNombre(comboRutaOrigen.getI());
+//         Aeropuerto aerDestino = new Aeropuerto();
+//         aerDestino.setNombre(comboRutaDestino.getText());
+//        
+//        int tiempoEstimado = (int) txtTiempoEstimadoRuta.getValue();
+//        
+//       
+//        if (aerOrigen.getNombre().equals("") || aerDestino.getNombre().equals("") || tiempoEstimado == 0) {
+//            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+//        } else {
+//            Ruta nuevaRuta = new Ruta(id, aerOrigen, aerDestino, tiempoEstimado);
+//            listaRuta.add(nuevaRuta);
+//            JOptionPane.showMessageDialog(this, "La ruta " + aerOrigen + " " + aerDestino + " fue creada correctamente");
+//            cargarListaTablaRuta();
+//        }
 
     }//GEN-LAST:event_btnGuardarRutaActionPerformed
 
@@ -790,6 +849,8 @@ public class Index extends javax.swing.JFrame {
                     
                     existe = true;
                     cargarListaTablaAvion();
+                    Avion avi = new Avion(id, modelo, numAsientosAvion, numBaniosAvion, CapacidadMaxAvion);
+                    avion_model.Update(avi, id);
                     JOptionPane.showMessageDialog(this, "Avion editado correctamente");
                     break;
                 }
@@ -810,6 +871,8 @@ public class Index extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Avion eliminado correctamente");
                 existe = true;
                 cargarListaTablaAvion();
+                avion_model.Delete(id);
+                limpiarCamposAvion();
                 break;
             }
         }
@@ -821,28 +884,32 @@ public class Index extends javax.swing.JFrame {
 
     private void btnBuscarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarRutaActionPerformed
         // TODO add your handling code here:
-        int id = (int) txtIdRuta.getValue();
-        boolean existe = false;
-        for (int i = 0; i < listaRuta.size(); i++) {
-            if (listaAvion.get(i).getId() == id) {
-                txtOrigenRuta.setText(listaRuta.get(i).getOrigen().getNombre());
-                txtDestinoRuta.setText(listaRuta.get(i).getDestino().getNombre());
-                txtTiempoEstimadoRuta.setValue(listaRuta.get(i).getTimpoEstimado());
-          
-                existe = true;
-                break;
-            }
-        }
-        if (!existe) {
-            JOptionPane.showMessageDialog(this, "La ruta no esta registrada");
-        }
-        
+//        int id = (int) txtIdRuta.getValue();
+//        boolean existe = false;
+//        for (int i = 0; i < listaRuta.size(); i++) {
+//            if (listaAvion.get(i).getId() == id) {
+//                comboRutaOrigen.setText(listaRuta.get(i).getOrigen().getNombre());
+//                comboRutaDestino.setText(listaRuta.get(i).getDestino().getNombre());
+//                txtTiempoEstimadoRuta.setValue(listaRuta.get(i).getTimpoEstimado());
+//          
+//                existe = true;
+//                break;
+//            }
+//        }
+//        if (!existe) {
+//            JOptionPane.showMessageDialog(this, "La ruta no esta registrada");
+//        }
+//        
     }//GEN-LAST:event_btnBuscarRutaActionPerformed
 
     private void btnEditarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarRutaActionPerformed
         // TODO add your handling code here:
         
     }//GEN-LAST:event_btnEditarRutaActionPerformed
+
+    private void comboRutaOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboRutaOrigenActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboRutaOrigenActionPerformed
 
     /**
      * @param args the command line arguments
@@ -894,6 +961,8 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JButton btnGuardarAeropuerto;
     private javax.swing.JButton btnGuardarAvion;
     private javax.swing.JButton btnGuardarRuta;
+    private javax.swing.JComboBox<String> comboRutaDestino;
+    private javax.swing.JComboBox<String> comboRutaOrigen;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -927,13 +996,11 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JTextField txtCiudadAeropuerto;
     private javax.swing.JSpinner txtCoordenadaXAeropuerto;
     private javax.swing.JSpinner txtCoordenadaYAeropuerto;
-    private javax.swing.JTextField txtDestinoRuta;
     private javax.swing.JSpinner txtIdAeropuerto;
     private javax.swing.JSpinner txtIdAvion;
     private javax.swing.JSpinner txtIdRuta;
     private javax.swing.JTextField txtModeloAvion;
     private javax.swing.JTextField txtNombreAeropuerto;
-    private javax.swing.JTextField txtOrigenRuta;
     private javax.swing.JTextField txtPaisAeropuerto;
     private javax.swing.JSpinner txtTiempoEstimadoRuta;
     private javax.swing.JSpinner txtnumAsientosAvion;
