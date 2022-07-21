@@ -6,6 +6,7 @@ package View;
 import Class.*;
 import Model.AeropuertoModel;
 import Model.AvionModel;
+import Model.RutaModel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
@@ -24,14 +25,16 @@ public class Index extends javax.swing.JFrame {
     ArrayList<Aeropuerto> listaAeropuertos= aeropuerto_model.Read();
     AvionModel avion_model = new AvionModel();
     ArrayList<Avion> listaAvion = avion_model.Read();
-    ArrayList<Ruta> listaRuta = new ArrayList();
+    RutaModel ruta_model = new RutaModel();
+    ArrayList<Ruta> listaRuta = ruta_model.Read();
     
     
     public Index() {
         initComponents();
         cargarListaTablaAeropuerto();
         cargarListaTablaAvion();
-        cargarComboOrigen();
+        cargarListaTablaRuta();
+        
     }
 
     
@@ -75,6 +78,7 @@ public class Index extends javax.swing.JFrame {
             tab.addRow(datos);
         }
         tableAeropuertos.setModel(tab);
+        cargarComboOrigen();
     }
     
     public void limpiarCamposAeropuerto(){
@@ -90,22 +94,21 @@ public class Index extends javax.swing.JFrame {
     
       public void cargarListaTablaRuta() {
         DefaultTableModel tab = new DefaultTableModel();
-        String[] cabecera = {"Id", "origen", "destino", "tiempoEstimado"};
+        String[] cabecera = {"Id", "Origen", "Destino", "Tiempo Estimado"};
         Object[] datos = new Object[cabecera.length];
         tab.setColumnIdentifiers(cabecera);
         for (int i = 0; i < listaRuta.size(); i++) {
             datos[0] = listaRuta.get(i).getId();
-            datos[1] = listaRuta.get(i).getOrigen().getNombre();
-            datos[2] = listaRuta.get(i).getDestino().getNombre();
-            datos[3] = listaRuta.get(i).getTimpoEstimado();
-            
+            datos[1] = listaRuta.get(i).getNombre_origen();
+            datos[2] = listaRuta.get(i).getNombre_destino();
+            datos[3] = listaRuta.get(i).getTiempo_estimado();
             tab.addRow(datos);
         }
         tableRuta.setModel(tab);
-        
-        
     }
-    
+      
+      
+      
       public void cargarComboOrigen() {
         comboRutaOrigen.removeAllItems();
         comboRutaOrigen.addItem("");
@@ -116,6 +119,7 @@ public class Index extends javax.swing.JFrame {
             comboRutaDestino.addItem(aeropuerto.getId() + "-" + aeropuerto.getNombre());
         }
         comboRutaOrigen.setSelectedIndex(0);
+        comboRutaDestino.setSelectedIndex(0);
     }
 
     
@@ -787,24 +791,31 @@ public class Index extends javax.swing.JFrame {
 
     private void btnGuardarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarRutaActionPerformed
         // TODO add your handling code here:
-//         int id = (int) txtIdRuta.getValue(); // Spinner
-//         Aeropuerto aerOrigen = new Aeropuerto();
-//         aerOrigen.setNombre(comboRutaOrigen.getI());
-//         Aeropuerto aerDestino = new Aeropuerto();
-//         aerDestino.setNombre(comboRutaDestino.getText());
-//        
-//        int tiempoEstimado = (int) txtTiempoEstimadoRuta.getValue();
-//        
-//       
-//        if (aerOrigen.getNombre().equals("") || aerDestino.getNombre().equals("") || tiempoEstimado == 0) {
-//            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
-//        } else {
-//            Ruta nuevaRuta = new Ruta(id, aerOrigen, aerDestino, tiempoEstimado);
-//            listaRuta.add(nuevaRuta);
-//            JOptionPane.showMessageDialog(this, "La ruta " + aerOrigen + " " + aerDestino + " fue creada correctamente");
-//            cargarListaTablaRuta();
-//        }
-
+         int id = (int) txtIdRuta.getValue(); // Spinner
+         String origen = comboRutaOrigen.getSelectedItem().toString();
+         String[] partes_origen = origen.split("-");
+         int id_origen = Integer.parseInt(partes_origen[0]);
+         String nombre_origen = partes_origen[1];
+         
+         String destino = comboRutaDestino.getSelectedItem().toString();
+         String[] partes_destino = destino.split("-");
+         int id_destino = Integer.parseInt(partes_destino[0]);
+         String nombre_destino = partes_destino[1];
+        
+        int tiempoEstimado = (int) txtTiempoEstimadoRuta.getValue();
+        
+       
+        if (origen.equals("") || destino.equals("") || tiempoEstimado == 0 || destino == origen) {
+            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+        } else{
+            Ruta ruta = new Ruta(id, id_origen, id_destino, tiempoEstimado, nombre_origen, nombre_destino, tiempoEstimado);
+            int result = ruta_model.Create(ruta);
+            ruta.setId(result);
+            listaRuta.add(ruta);
+            JOptionPane.showMessageDialog(this, "Ruta " + result + " fue creado correctamente");
+            cargarListaTablaRuta();
+            
+        }
     }//GEN-LAST:event_btnGuardarRutaActionPerformed
 
     private void btnBuscarAvionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarAvionActionPerformed
@@ -888,8 +899,8 @@ public class Index extends javax.swing.JFrame {
 //        boolean existe = false;
 //        for (int i = 0; i < listaRuta.size(); i++) {
 //            if (listaAvion.get(i).getId() == id) {
-//                comboRutaOrigen.setText(listaRuta.get(i).getOrigen().getNombre());
-//                comboRutaDestino.setText(listaRuta.get(i).getDestino().getNombre());
+//                comboRutaOrigen.addItem(listaRuta.get(i).getOrigen().getNombre());
+//                comboRutaDestino.addItem(listaRuta.get(i).getDestino().getNombre());
 //                txtTiempoEstimadoRuta.setValue(listaRuta.get(i).getTimpoEstimado());
 //          
 //                existe = true;
@@ -899,7 +910,7 @@ public class Index extends javax.swing.JFrame {
 //        if (!existe) {
 //            JOptionPane.showMessageDialog(this, "La ruta no esta registrada");
 //        }
-//        
+////        
     }//GEN-LAST:event_btnBuscarRutaActionPerformed
 
     private void btnEditarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarRutaActionPerformed

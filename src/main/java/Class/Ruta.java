@@ -10,22 +10,48 @@ package Class;
  */
 public class Ruta {
 
-    private int id;
-    private Aeropuerto origen;
-    private Aeropuerto destino;
-    private int timpoEstimado;
-
-    public Ruta(int id, Aeropuerto origen, Aeropuerto destino, int timpoEstimado) {
-        this.id = id;
-        this.origen = origen;
-        this.destino = destino;
-        this.timpoEstimado = timpoEstimado;
+    /**
+     * @return the tiempo_estimado
+     */
+    public int getTiempo_estimado() {
+        return tiempo_estimado;
     }
 
-    public Ruta() {
+    /**
+     * @param tiempo_estimado the tiempo_estimado to set
+     */
+    public void setTiempo_estimado(int tiempo_estimado) {
+        this.tiempo_estimado = tiempo_estimado;
     }
-    
-    
+
+    /**
+     * @return the nombre_origen
+     */
+    public String getNombre_origen() {
+        return nombre_origen;
+    }
+
+    /**
+     * @param nombre_origen the nombre_origen to set
+     */
+    public void setNombre_origen(String nombre_origen) {
+        this.nombre_origen = nombre_origen;
+    }
+
+    /**
+     * @return the nombre_destino
+     */
+    public String getNombre_destino() {
+        return nombre_destino;
+    }
+
+    /**
+     * @param nombre_destino the nombre_destino to set
+     */
+    public void setNombre_destino(String nombre_destino) {
+        this.nombre_destino = nombre_destino;
+    }
+
     
 
     /**
@@ -45,28 +71,28 @@ public class Ruta {
     /**
      * @return the origen
      */
-    public Aeropuerto getOrigen() {
+    public int getOrigen() {
         return origen;
     }
 
     /**
      * @param origen the origen to set
      */
-    public void setOrigen(Aeropuerto origen) {
+    public void setOrigen(int origen) {
         this.origen = origen;
     }
 
     /**
      * @return the destino
      */
-    public Aeropuerto getDestino() {
+    public int getDestino() {
         return destino;
     }
 
     /**
      * @param destino the destino to set
      */
-    public void setDestino(Aeropuerto destino) {
+    public void setDestino(int destino) {
         this.destino = destino;
     }
 
@@ -83,7 +109,45 @@ public class Ruta {
     public void setTimpoEstimado(int timpoEstimado) {
         this.timpoEstimado = timpoEstimado;
     }
+
+    private int id;
+    private int origen;
+    private int destino;
+    private int timpoEstimado;
+    private String nombre_origen;
+    private String nombre_destino;
+    private int tiempo_estimado;
+
+    public Ruta(int id, int origen, int destino, int timpoEstimado, String nombre_origen, String nombre_destino, int tiempo_estimado) {
+        this.id = id;
+        this.origen = origen;
+        this.destino = destino;
+        this.timpoEstimado = timpoEstimado;
+        this.nombre_origen = nombre_origen;
+        this.nombre_destino = nombre_destino;
+        this.tiempo_estimado = tiempo_estimado;
+    }
+
+    public Ruta() {
+    }
+
+    
+    
+    }
+
     
     
     
-}
+    
+  
+    
+
+   
+    
+
+    
+    
+    
+    
+
+    
