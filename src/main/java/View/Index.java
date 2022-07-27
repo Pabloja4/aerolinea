@@ -10,7 +10,8 @@ import Model.RutaModel;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-
+import org.jfree.chart.*;
+import org.jfree.data.general.DefaultPieDataset;
 
 /**
  *
@@ -22,7 +23,7 @@ public class Index extends javax.swing.JFrame {
      * Creates new form Index
      */
     AeropuertoModel aeropuerto_model = new AeropuertoModel();
-    ArrayList<Aeropuerto> listaAeropuertos= aeropuerto_model.Read();
+    ArrayList<Aeropuerto> listaAeropuertos = aeropuerto_model.Read();
     AvionModel avion_model = new AvionModel();
     ArrayList<Avion> listaAvion = avion_model.Read();
     RutaModel ruta_model = new RutaModel();
@@ -34,7 +35,7 @@ public class Index extends javax.swing.JFrame {
         cargarListaTablaAeropuerto();
         cargarListaTablaAvion();
         cargarListaTablaRuta();
-        
+        cargarGraficoAeropuertoPie();
     }
 
     
@@ -107,8 +108,7 @@ public class Index extends javax.swing.JFrame {
         tableRuta.setModel(tab);
     }
       
-      
-      
+       
       public void cargarComboOrigen() {
         comboRutaOrigen.removeAllItems();
         comboRutaOrigen.addItem("");
@@ -120,9 +120,29 @@ public class Index extends javax.swing.JFrame {
         }
         comboRutaOrigen.setSelectedIndex(0);
         comboRutaDestino.setSelectedIndex(0);
+        
+        
     }
-
+       public void limpiarcamposRutas(){
+        txtIdRuta.setValue(0);
+        comboRutaOrigen.setSelectedItem("");
+        comboRutaDestino.setSelectedItem("");
+        txtTiempoEstimadoRuta.setValue(0);
+    }
     
+       public void cargarGraficoAeropuertoPie() {
+        ArrayList<Aeropuerto> lista_aeropuerto_p = aeropuerto_model.GetByPais();       
+        DefaultPieDataset dataset = new DefaultPieDataset();
+      
+        for (Aeropuerto index : lista_aeropuerto_p) {
+            dataset.setValue(index.getPais(), index.getCantidad());
+        }
+        JFreeChart chart = ChartFactory.createPieChart("Grafico de Aeropuertos por Pais", dataset, true, true, true);       
+        ChartPanel panel = new ChartPanel(chart);
+        panelPaises.setLayout(new java.awt.BorderLayout());
+        panelPaises.add(panel);
+        panelPaises.validate();
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -135,23 +155,6 @@ public class Index extends javax.swing.JFrame {
 
         jLabel7 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        tabAeropuerto = new javax.swing.JPanel();
-        labIdAeropuerto = new javax.swing.JLabel();
-        labNombreAeropuerto = new javax.swing.JLabel();
-        labCiudadAeropuerto = new javax.swing.JLabel();
-        labPaisAeropuerto = new javax.swing.JLabel();
-        labCoordAeropuerto = new javax.swing.JLabel();
-        labCoordYAeropuerto = new javax.swing.JLabel();
-        txtIdAeropuerto = new javax.swing.JSpinner();
-        txtNombreAeropuerto = new javax.swing.JTextField();
-        txtPaisAeropuerto = new javax.swing.JTextField();
-        txtCiudadAeropuerto = new javax.swing.JTextField();
-        btnGuardarAeropuerto = new javax.swing.JButton();
-        btnBuscarAeropuerto = new javax.swing.JButton();
-        btnEditarAeropuerto = new javax.swing.JButton();
-        btnEliminarAeropuerto = new javax.swing.JButton();
-        txtCoordenadaXAeropuerto = new javax.swing.JSpinner();
-        txtCoordenadaYAeropuerto = new javax.swing.JSpinner();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableAeropuertos = new javax.swing.JTable();
@@ -189,146 +192,28 @@ public class Index extends javax.swing.JFrame {
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableRuta = new javax.swing.JTable();
+        panelPaises = new javax.swing.JPanel();
+        tabAeropuerto = new javax.swing.JPanel();
+        labIdAeropuerto = new javax.swing.JLabel();
+        labNombreAeropuerto = new javax.swing.JLabel();
+        labCiudadAeropuerto = new javax.swing.JLabel();
+        labPaisAeropuerto = new javax.swing.JLabel();
+        labCoordAeropuerto = new javax.swing.JLabel();
+        labCoordYAeropuerto = new javax.swing.JLabel();
+        txtIdAeropuerto = new javax.swing.JSpinner();
+        txtNombreAeropuerto = new javax.swing.JTextField();
+        txtPaisAeropuerto = new javax.swing.JTextField();
+        txtCiudadAeropuerto = new javax.swing.JTextField();
+        btnGuardarAeropuerto = new javax.swing.JButton();
+        btnBuscarAeropuerto = new javax.swing.JButton();
+        btnEditarAeropuerto = new javax.swing.JButton();
+        btnEliminarAeropuerto = new javax.swing.JButton();
+        txtCoordenadaXAeropuerto = new javax.swing.JSpinner();
+        txtCoordenadaYAeropuerto = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel7.setText("Sistema de gestion de aerolineas");
-
-        labIdAeropuerto.setText("ID");
-
-        labNombreAeropuerto.setText("Nombre");
-
-        labCiudadAeropuerto.setText("Ciudad");
-
-        labPaisAeropuerto.setText("Pais");
-
-        labCoordAeropuerto.setText("Coordenada_X");
-
-        labCoordYAeropuerto.setText("Coordenada_y");
-
-        txtPaisAeropuerto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPaisAeropuertoActionPerformed(evt);
-            }
-        });
-
-        txtCiudadAeropuerto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCiudadAeropuertoActionPerformed(evt);
-            }
-        });
-
-        btnGuardarAeropuerto.setText("Guardar");
-        btnGuardarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarAeropuertoActionPerformed(evt);
-            }
-        });
-
-        btnBuscarAeropuerto.setText("Buscar");
-        btnBuscarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarAeropuertoActionPerformed(evt);
-            }
-        });
-
-        btnEditarAeropuerto.setText("Editar");
-        btnEditarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditarAeropuertoActionPerformed(evt);
-            }
-        });
-
-        btnEliminarAeropuerto.setText("Eliminar");
-        btnEliminarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarAeropuertoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout tabAeropuertoLayout = new javax.swing.GroupLayout(tabAeropuerto);
-        tabAeropuerto.setLayout(tabAeropuertoLayout);
-        tabAeropuertoLayout.setHorizontalGroup(
-            tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabAeropuertoLayout.createSequentialGroup()
-                .addGap(41, 41, 41)
-                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labNombreAeropuerto)
-                            .addComponent(labIdAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labPaisAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(52, 52, 52)
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtIdAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtNombreAeropuerto, javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(txtPaisAeropuerto, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))))
-                    .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabAeropuertoLayout.createSequentialGroup()
-                            .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(labCoordYAeropuerto)
-                                .addComponent(labCoordAeropuerto))
-                            .addGap(18, 18, 18)
-                            .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtCoordenadaXAeropuerto)
-                                .addComponent(txtCoordenadaYAeropuerto)))
-                        .addGroup(tabAeropuertoLayout.createSequentialGroup()
-                            .addComponent(labCiudadAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(52, 52, 52)
-                            .addComponent(txtCiudadAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
-                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnEditarAeropuerto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnEliminarAeropuerto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnBuscarAeropuerto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnGuardarAeropuerto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(101, 101, 101))
-        );
-        tabAeropuertoLayout.setVerticalGroup(
-            tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tabAeropuertoLayout.createSequentialGroup()
-                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labIdAeropuerto)
-                            .addComponent(txtIdAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labNombreAeropuerto)
-                            .addComponent(txtNombreAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(btnGuardarAeropuerto)))
-                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labPaisAeropuerto)
-                            .addComponent(txtPaisAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnBuscarAeropuerto))
-                        .addGap(18, 18, 18)
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtCiudadAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(labCiudadAeropuerto))
-                        .addGap(13, 13, 13)
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labCoordAeropuerto)
-                            .addComponent(txtCoordenadaXAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labCoordYAeropuerto)
-                            .addComponent(txtCoordenadaYAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(btnEditarAeropuerto)
-                        .addGap(27, 27, 27)
-                        .addComponent(btnEliminarAeropuerto)))
-                .addContainerGap(42, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Aeropuerto", tabAeropuerto);
 
         tableAeropuertos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -422,7 +307,7 @@ public class Index extends javax.swing.JFrame {
                                 .addComponent(txtModeloAvion, javax.swing.GroupLayout.Alignment.LEADING))
                             .addComponent(txtnumAsientosAvion, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCapacidadMaxAvion, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnEditarAvion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnEliminarAvion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -465,7 +350,7 @@ public class Index extends javax.swing.JFrame {
                         .addComponent(btnBuscarAvion)
                         .addGap(28, 28, 28)
                         .addComponent(btnEditarAvion)))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Avion", jPanel3);
@@ -487,11 +372,11 @@ public class Index extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("ListarAviones", jPanel4);
@@ -526,6 +411,11 @@ public class Index extends javax.swing.JFrame {
         });
 
         btnEliminarRuta.setText("Eliminar");
+        btnEliminarRuta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarRutaActionPerformed(evt);
+            }
+        });
 
         comboRutaOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         comboRutaOrigen.addActionListener(new java.awt.event.ActionListener() {
@@ -557,7 +447,7 @@ public class Index extends javax.swing.JFrame {
                             .addComponent(txtIdRuta, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
                             .addComponent(comboRutaOrigen, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(comboRutaDestino, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnEditarRuta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnEliminarRuta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -597,7 +487,7 @@ public class Index extends javax.swing.JFrame {
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(labTiempoEstimadoRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtTiempoEstimadoRuta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Rutas", jPanel5);
@@ -619,14 +509,163 @@ public class Index extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 322, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("ListarRutas", jPanel6);
+
+        javax.swing.GroupLayout panelPaisesLayout = new javax.swing.GroupLayout(panelPaises);
+        panelPaises.setLayout(panelPaisesLayout);
+        panelPaisesLayout.setHorizontalGroup(
+            panelPaisesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 526, Short.MAX_VALUE)
+        );
+        panelPaisesLayout.setVerticalGroup(
+            panelPaisesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 322, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Grafica", panelPaises);
+
+        labIdAeropuerto.setText("ID");
+
+        labNombreAeropuerto.setText("Nombre");
+
+        labCiudadAeropuerto.setText("Ciudad");
+
+        labPaisAeropuerto.setText("Pais");
+
+        labCoordAeropuerto.setText("Coordenada_X");
+
+        labCoordYAeropuerto.setText("Coordenada_y");
+
+        txtPaisAeropuerto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPaisAeropuertoActionPerformed(evt);
+            }
+        });
+
+        txtCiudadAeropuerto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCiudadAeropuertoActionPerformed(evt);
+            }
+        });
+
+        btnGuardarAeropuerto.setText("Guardar");
+        btnGuardarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarAeropuertoActionPerformed(evt);
+            }
+        });
+
+        btnBuscarAeropuerto.setText("Buscar");
+        btnBuscarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarAeropuertoActionPerformed(evt);
+            }
+        });
+
+        btnEditarAeropuerto.setText("Editar");
+        btnEditarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarAeropuertoActionPerformed(evt);
+            }
+        });
+
+        btnEliminarAeropuerto.setText("Eliminar");
+        btnEliminarAeropuerto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarAeropuertoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout tabAeropuertoLayout = new javax.swing.GroupLayout(tabAeropuerto);
+        tabAeropuerto.setLayout(tabAeropuertoLayout);
+        tabAeropuertoLayout.setHorizontalGroup(
+            tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tabAeropuertoLayout.createSequentialGroup()
+                .addGap(41, 41, 41)
+                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labNombreAeropuerto)
+                            .addComponent(labIdAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(labPaisAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(52, 52, 52)
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtIdAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtNombreAeropuerto, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(txtPaisAeropuerto, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))))
+                    .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, tabAeropuertoLayout.createSequentialGroup()
+                            .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(labCoordYAeropuerto)
+                                .addComponent(labCoordAeropuerto))
+                            .addGap(18, 18, 18)
+                            .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtCoordenadaXAeropuerto)
+                                .addComponent(txtCoordenadaYAeropuerto)))
+                        .addGroup(tabAeropuertoLayout.createSequentialGroup()
+                            .addComponent(labCiudadAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(52, 52, 52)
+                            .addComponent(txtCiudadAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnEditarAeropuerto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEliminarAeropuerto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnBuscarAeropuerto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGuardarAeropuerto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(101, 101, 101))
+        );
+        tabAeropuertoLayout.setVerticalGroup(
+            tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tabAeropuertoLayout.createSequentialGroup()
+                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labIdAeropuerto)
+                            .addComponent(txtIdAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labNombreAeropuerto)
+                            .addComponent(txtNombreAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(btnGuardarAeropuerto)))
+                .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labPaisAeropuerto)
+                            .addComponent(txtPaisAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscarAeropuerto))
+                        .addGap(18, 18, 18)
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtCiudadAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(labCiudadAeropuerto))
+                        .addGap(13, 13, 13)
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labCoordAeropuerto)
+                            .addComponent(txtCoordenadaXAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(tabAeropuertoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCoordenadaYAeropuerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(labCoordYAeropuerto)))
+                    .addGroup(tabAeropuertoLayout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addComponent(btnEditarAeropuerto)
+                        .addGap(27, 27, 27)
+                        .addComponent(btnEliminarAeropuerto)))
+                .addContainerGap(101, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Aeropuerto", tabAeropuerto);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -646,7 +685,7 @@ public class Index extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -895,32 +934,89 @@ public class Index extends javax.swing.JFrame {
 
     private void btnBuscarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarRutaActionPerformed
         // TODO add your handling code here:
-//        int id = (int) txtIdRuta.getValue();
-//        boolean existe = false;
-//        for (int i = 0; i < listaRuta.size(); i++) {
-//            if (listaAvion.get(i).getId() == id) {
-//                comboRutaOrigen.addItem(listaRuta.get(i).getOrigen().getNombre());
-//                comboRutaDestino.addItem(listaRuta.get(i).getDestino().getNombre());
-//                txtTiempoEstimadoRuta.setValue(listaRuta.get(i).getTimpoEstimado());
-//          
-//                existe = true;
-//                break;
-//            }
-//        }
-//        if (!existe) {
-//            JOptionPane.showMessageDialog(this, "La ruta no esta registrada");
-//        }
+        int id = (int) txtIdRuta.getValue();
+        boolean existe = false;
+        for (int i = 0; i < listaRuta.size(); i++) {
+            if (listaAvion.get(i).getId() == id) {
+                comboRutaOrigen.addItem(listaRuta.get(i).getNombre_origen());
+                comboRutaDestino.addItem(listaRuta.get(i).getNombre_destino());
+                txtTiempoEstimadoRuta.setValue(listaRuta.get(i).getTimpoEstimado());
+          
+                existe = true;
+                break;
+            }
+        }
+        if (!existe) {
+            JOptionPane.showMessageDialog(this, "La ruta no esta registrada");
+        }
 ////        
     }//GEN-LAST:event_btnBuscarRutaActionPerformed
 
     private void btnEditarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarRutaActionPerformed
         // TODO add your handling code here:
+         int id = (int) txtIdRuta.getValue(); // Spinner
+         String origen = comboRutaOrigen.getSelectedItem().toString();
+         String[] partes_origen = origen.split("-");
+         int id_origen = Integer.parseInt(partes_origen[0]);
+         String nombre_origen = partes_origen[1];
+         
+         String destino = comboRutaDestino.getSelectedItem().toString();
+         String[] partes_destino = destino.split("-");
+         int id_destino = Integer.parseInt(partes_destino[0]);
+         String nombre_destino = partes_destino[1];
         
+        int tiempoEstimado = (int) txtTiempoEstimadoRuta.getValue();
+        
+       
+        
+        boolean existe = false;
+        //Valido que los valores no esten vacios
+        if (origen.equals("") || destino.equals("") || tiempoEstimado == 0 || destino == origen) {
+            JOptionPane.showMessageDialog(null, "Error: debe llenar todos los campos");
+        }else{
+            for (int i = 0; i < listaRuta.size(); i++) {
+            if (listaRuta.get(i).getId() == id) {
+                    listaRuta.get(i).setOrigen(id_origen);
+                    listaRuta.get(i).setDestino(id_destino);
+                    listaRuta.get(i).setTiempo_estimado(tiempoEstimado);
+                    
+                    existe = true;
+                    cargarListaTablaRuta();
+                    Ruta r = new Ruta(id, id_origen, id_destino, tiempoEstimado, nombre_origen, nombre_destino, tiempoEstimado);
+                    ruta_model.Update(r, id);
+                    JOptionPane.showMessageDialog(this, "Ruta editada correctamente");
+                    break;
+                }
+            }
+        }
+        if (!existe) {
+            JOptionPane.showMessageDialog(this, "La ruta no esta registrado");
+        }
     }//GEN-LAST:event_btnEditarRutaActionPerformed
 
     private void comboRutaOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboRutaOrigenActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_comboRutaOrigenActionPerformed
+
+    private void btnEliminarRutaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarRutaActionPerformed
+        // TODO add your handling code here:
+        int id = (int) txtIdRuta.getValue(); // Spiner
+        boolean existe = false;
+        for (int i = 0; i < listaRuta.size(); i++) {
+            if (listaRuta.get(i).getId() == id) {
+                    listaRuta.remove(listaRuta.get(i));
+                    JOptionPane.showMessageDialog(this, "Ruta eliminada correctamente");
+                existe = true;
+                cargarListaTablaRuta();
+                ruta_model.Delete(id);
+                limpiarcamposRutas();
+                break;
+            }
+        }
+        if (!existe) {
+            JOptionPane.showMessageDialog(this, "El Avion no esta registrado");
+        }
+    }//GEN-LAST:event_btnEliminarRutaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -999,6 +1095,7 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JLabel labOrigenRuta;
     private javax.swing.JLabel labPaisAeropuerto;
     private javax.swing.JLabel labTiempoEstimadoRuta;
+    private javax.swing.JPanel panelPaises;
     private javax.swing.JPanel tabAeropuerto;
     private javax.swing.JTable tableAeropuertos;
     private javax.swing.JTable tableAvion;

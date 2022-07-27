@@ -22,7 +22,7 @@ public class RutaModel {
     
     public int Create(Ruta r){
         Connection conn = conexion.getConnection();
-        String query = "INSERT INTO ruta(origen, destino, tiempo_estamo) VALUES(?, ?, ?)";
+        String query = "INSERT INTO ruta(origen, destino, tiempo_estimado) VALUES(?, ?, ?)";
         try{
             PreparedStatement statment = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statment.setInt(1, r.getOrigen());
@@ -65,5 +65,39 @@ public class RutaModel {
         }
         return lista_ruta;
     }
-
+            public int Update(Ruta a, int id) {
+        Connection conn = conexion.getConnection();
+        String query = "UPDATE ruta "
+                + "SET origen = ?, "
+                + "destino = ?, "
+                + "tiempo_estimado = ? "
+                + "WHERE id = ?";
+         try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            newStatement.setInt(1, a.getOrigen());
+            newStatement.setInt(2, a.getDestino());
+            newStatement.setInt(3, a.getTiempo_estimado());
+            newStatement.setInt(4, id);
+            newStatement.executeUpdate();
+            return 1;
+        } catch (Exception exp) {
+            System.out.println("Error: " + exp.getMessage());
+        }
+        return 0;
+        }
+            
+            
+        public int Delete(int id) {
+        Connection conn = conexion.getConnection();
+        String query = "DELETE FROM ruta WHERE id = ?;";
+        try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            newStatement.setInt(1, id);
+            newStatement.executeUpdate();
+            return 1;
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return 0;
+    }
 }

@@ -82,12 +82,12 @@ public class AeropuertoModel {
     
     public int Update(Aeropuerto a, int id) {
         Connection conn = conexion.getConnection();
-        String query = "UPDATE estacion "
+        String query = "UPDATE aeropuerto "
                 + "SET nombre = ?, "
                 + "ciudad = ?, "
                 + "pais = ?, "
                 + "coord_x = ?, "
-                + "coord_y = ?, "
+                + "coord_y = ? "
                 + "WHERE id = ?";
          try {
             PreparedStatement newStatement = conn.prepareStatement(query);
@@ -104,6 +104,26 @@ public class AeropuertoModel {
         }
         return 0;
     }
-
+        
+        public ArrayList<Aeropuerto> GetByPais() {
+        Connection conn = conexion.getConnection();
+        ArrayList<Aeropuerto> lista_aeropuertos = new ArrayList();
+        String query = "SELECT pais, count(pais) AS cantidad "
+                    +  "FROM aeropuerto "
+                    +  "GROUP BY pais";
+        try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            ResultSet resultados = newStatement.executeQuery();
+            while (resultados.next()) {
+                String pais = resultados.getString(1);
+                int cantidad = resultados.getInt(2);
+                Aeropuerto aero = new Aeropuerto(pais, cantidad);
+                lista_aeropuertos.add(aero);
+            }
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        return lista_aeropuertos;
+    }
             
 }

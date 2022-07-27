@@ -11,6 +11,20 @@ package Class;
 public class Aeropuerto {
 
     /**
+     * @return the cantidad
+     */
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    /**
+     * @param cantidad the cantidad to set
+     */
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    /**
      * @return the id
      */
     public int getId() {
@@ -99,6 +113,7 @@ public class Aeropuerto {
     private String pais;
     private int coord_x;
     private int coord_y;
+    private int cantidad;
 
     public Aeropuerto(int id, String nombre, String ciudad, String pais, int coord_x, int coord_y) {
         this.id = id;
@@ -111,6 +126,9 @@ public class Aeropuerto {
 
     public Aeropuerto() {
     }
-    
-    
+
+    public Aeropuerto(String pais, int cantidad) {
+        this.pais = pais;
+        this.cantidad = cantidad;
+    }
 }

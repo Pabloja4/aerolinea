@@ -77,11 +77,11 @@ public class AvionModel {
     
     public int Update(Avion a, int id) {
         Connection conn = conexion.getConnection();
-        String query = "UPDATE estacion "
+        String query = "UPDATE avion "
                 + "SET modelo = ?, "
                 + "numero_asientos = ?, "
                 + "numero_banios = ?, "
-                + "Capacidad_maxima = ?, "
+                + "Capacidad_maxima = ? "
                 + "WHERE id = ?";
          try {
             PreparedStatement newStatement = conn.prepareStatement(query);
