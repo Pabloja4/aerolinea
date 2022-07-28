@@ -97,4 +97,26 @@ public class AvionModel {
         }
         return 0;
     }
+    
+        public ArrayList<Avion> GetByModelo() {
+        Connection conn = conexion.getConnection();
+        ArrayList<Avion> lista_avion = new ArrayList();
+        String query = "SELECT modelo, COUNT(modelo) AS cantidad "
+                     + "FROM avion "
+                     + "GROUP BY modelo";
+        try {
+            PreparedStatement newStatement = conn.prepareStatement(query);
+            ResultSet resultados = newStatement.executeQuery();
+            while (resultados.next()) {
+                String modelo = resultados.getString(1);
+                int cantidad = resultados.getInt(2);
+                Avion en = new Avion(modelo, cantidad);
+                lista_avion.add(en);
+            }
+        } catch (Exception e) {
+            System.out.println("Error:" + e.getMessage());
+        }
+        return lista_avion;
+    }
+
 }

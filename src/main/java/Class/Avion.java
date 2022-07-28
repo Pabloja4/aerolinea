@@ -11,6 +11,20 @@ package Class;
 public class Avion {
 
     /**
+     * @return the cantidad
+     */
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    /**
+     * @param cantidad the cantidad to set
+     */
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    /**
      * @return the id
      */
     public int getId() {
@@ -84,6 +98,7 @@ public class Avion {
     private int numeroAsientos;
     private int numeroBanios;
     private int CapacidadPesoMaximo;
+    private int cantidad;
 
     public Avion(int id, String modelo, int numeroAsientos, int numeroBanios, int CapacidadPesoMaximo) {
         this.id = id;
@@ -95,6 +110,13 @@ public class Avion {
 
     public Avion() {
     }
+
+    public Avion(String modelo,  int cantidad) {
+        
+        this.modelo = modelo;
+        this.cantidad = cantidad;
+    }
+    
     
     
 }
